@@ -1,43 +1,28 @@
 from abc import ABC, abstractmethod
-from typing import List
-class IKeyLogger(ABC):
- @abstractmethod
- def start_logging(self) -> None:
- pass
+import json
 
- @abstractmethod
- def stop_logging(self) -> None:
- pass
 
- @abstractmethod
- def get_logged_keys(self) -> List[str]:
- pass
-
-#2
-
-# iwriter.py
-from abc import ABC, abstractmethod
 class IWriter(ABC):
-@abstractmethod
-def send_data(self, data: str, machine_name: str) -> None:
-pass
-
-#3
-class Encryptor:
-    pass
+    @abstractmethod
+    def send_data(self, data: str, machine_name: str) -> None:
+        pass
 
 
-#4
-class KeyLoggerManager:
-    pass
+class FileWriter(IWriter):
+    def __init__(self, filename = "output.json"):
+        self.filename = filename
 
-#5
-class NetworkWriter:
+    def send_data(self, data: str, machine_name: list) -> None:
+        try:
+            with open(self.filename, encoding="utf-8") as file:
+                existing_data = json.load(file)
+        except (FileNotFoundError, json.JSONDecodeError):
+            existing_data = []
 
-   #תוצאה נדרשת
-#send_data(data: str, machine_name: str) -> None
+        entry = {"machine": machine_name, "data": data}
+        existing_data.append(entry)
 
-   pass
 
-#חלק 2 בניית Backend
+        with open(self.filename, "w", encoding="utf-8") as file:
+            json.dump(existing_data, file, ensure_ascii=False, indent=4)
 
