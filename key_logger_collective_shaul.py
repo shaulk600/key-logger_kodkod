@@ -19,10 +19,10 @@ class FileWriter(IWriter):
         except (FileNotFoundError, json.JSONDecodeError):
             existing_data = []
 
-        entry = {"machine": machine_name, "data": data}
+        entry = {"תאריך ושעה": data, "התוכן": machine_name}
         existing_data.append(entry)
 
 
         with open(self.filename, "w", encoding="utf-8") as file:
-            json.dump(existing_data, file, ensure_ascii=False, indent=4)
+            json.dump(existing_data, file, ensure_ascii=False)
 
