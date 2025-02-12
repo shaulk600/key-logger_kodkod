@@ -36,6 +36,7 @@ class NetworkWriter:
 
    #תוצאה נדרשת
 #send_data(data: str, machine_name: str) -> None
+ pass
 
    pass
 
