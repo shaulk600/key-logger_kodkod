@@ -1,28 +1,32 @@
 from abc import ABC, abstractmethod
-from pynput import keyboard
 import json
-import os
 
-class KeyLoggerService:
-    def __init__(self, output_file="keystrokes.json"):
-        self.running = True
-        self.output_file = output_file
-        self.keystrokes = []
 
+class IWriter(ABC):
     @abstractmethod
-    def start(self):
+    def send_data(self, data: str, machine_name: str) -> None:
         pass
 
 
-    def stop(self,key):
-        if key == keyboard.Key.esc:
-            print("\n יציאה מה-Keylogger...")
-            self.running = False
-            return False
+class FileWriter(IWriter):
+    def __init__(self, filename = "output.json"):
+        self.filename = filename
+
+    def send_data(self, data: str, machine_name: list) -> None:
+        try:
+            with open(self.filename, encoding="utf-8") as file:
+                existing_data = json.load(file)
+        except (FileNotFoundError, json.JSONDecodeError):
+            existing_data = []
+
+        entry = {"machine": machine_name, "data": data}
+        existing_data.append(entry)
 
 
-    def get_gson(self,data):
-        self.keystrokes.append(data)
+        with open(self.filename, "w", encoding="utf-8") as file:
+            json.dump(existing_data, file, ensure_ascii=False, indent=4)
+
+
 
 
 
